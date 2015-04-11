@@ -37,28 +37,43 @@ class MyGame(CiraGame):
              self.EnemiesY.append(0)
              
         
-        for y in range(len(self.EnemiesY)-1):
+        for y in range(len(self.EnemiesY)):
             if self.EnemiesY[y] < cira.display.getHeight()-1 :
                 self.EnemiesY[y] = self.EnemiesY[y]+1
-                if self.EnemiesY[y] == 18 :
-                    for x in range (0,4):
-                        if self.EnemiesX[y] == self.x+x:
-                            self.EnemiesX[y] = randint(1, cira.display.getWidth() - 1)
-                            self.EnemiesY[y] = 0
-                            self.points.append(true)
-                            if len(self.points) == cira.display.getWidth():
-                                print("you win!")
-
             else :
                 self.EnemiesX[y] = randint(1, cira.display.getWidth() - 1)
                 self.EnemiesY[y] = 0
+            if self.EnemiesY[y] == 18 :
+                for x in range (4):
+                    if self.EnemiesX[y] == self.player.getSelfX()+x:
+                        self.EnemiesX[y] = randint(1, cira.display.getWidth() - 1)
+                        self.EnemiesY[y] = 0
+                        if len(self.points) > 0:
+                            self.points.pop()
+                        if len(self.points) == cira.display.getWidth():
+                            print("you win!")
 
+        for y in range(len(self.FriendlyY)):
+            if self.FriendlyY[y] < cira.display.getHeight()-1 :
+                self.FriendlyY[y] = self.FriendlyY[y]+1
+            else :
+                self.FriendlyX[y] = randint(1, cira.display.getWidth() - 1)
+                self.FriendlyY[y] = 0
+            if self.FriendlyY[y] == 18 :
+                for x in range (4):
+                    if self.FriendlyX[y] == self.player.getSelfX()+x:
+                        self.FriendlyX[y] = randint(1, cira.display.getWidth() - 1)
+                        self.FriendlyY[y] = 0
+                        self.points.append(1)
+                        if len(self.points) == cira.display.getWidth():
+                            print("you win!")
+
+            
         #Friendly stuff
         if len(self.FriendlyX) < 11 :
              self.FriendlyX.append(randint(1, cira.display.getWidth() - 1))
              self.FriendlyY.append(0)
              
-        
         for y in range(len(self.FriendlyY)-1):
             if self.FriendlyY[y] < cira.display.getHeight()-1 :
                 self.FriendlyY[y] = self.FriendlyY[y]+1
@@ -73,12 +88,11 @@ class MyGame(CiraGame):
         self.player.draw(self.playerColor)
         for x in range(len(self.EnemiesX)-1):
             cira.display.putPixel(self.EnemiesX[x], self.EnemiesY[x], self.EnemyColor[0],self.EnemyColor[1],self.EnemyColor[2])
-
         for x in range(len(self.FriendlyX)-1):
             cira.display.putPixel(self.FriendlyX[x], self.FriendlyY[x], self.FriendlyColor[0],self.FriendlyColor[1],self.FriendlyColor[2])
-        for x in range(len(self.points-1)):
-            if self.points[x]:
-                cira.display.putPixel(x, 20, color[0], color[1], color[2] )
+        for x in range(len(self.points)):
+            cira.display.putPixel(x, 20, self.FriendlyColor[0],self.FriendlyColor[1],self.FriendlyColor[2])
+
 
        
 class Player:
@@ -87,6 +101,12 @@ class Player:
     def __init__(self):
         self.x = 0
         self.y = 18
+
+    def getSelfX(self):
+        return self.x
+
+    def getSelfY(self):
+        return self.y
 
     # move the player left
     def moveLeft(self):
@@ -101,6 +121,6 @@ class Player:
     # draw the player
     def draw(self, color):
         # draw player dot
-        for x in range (0,4):
+        for x in range (4):
              cira.display.putPixel(self.x+x, self.y, color[0], color[1], color[2])
 
